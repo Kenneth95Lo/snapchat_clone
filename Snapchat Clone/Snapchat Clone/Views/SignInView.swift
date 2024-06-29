@@ -14,20 +14,21 @@ struct SignInView: View {
     @State private var password = ""
     @State private var email = ""
     @State private var shouldShowAlert = false
-    @State private var shouldShowAuthErrorAlert = false
-    @State private var authErrorMessage = ""
+    @State private var alertErrorMessage = ""
+    @State private var shouldButtonsDisabled = false
     
-    func login(){
+    func signUp(){
         if (username != "" && password != "" && email != ""){
             AuthUtils.doAuth(model: AuthViewModel(email: email, username: username, password: password)) { error in
                 guard error == nil else {
-                    authErrorMessage = error?.localizedDescription ?? "Error"
-                    shouldShowAuthErrorAlert = true
+                    alertErrorMessage = error?.localizedDescription ?? "Error"
+                    triggerAlert(show: true)
                     return
                 }
                 print("Signed up successfully")
             }
         }else{
+            alertErrorMessage = "No empty fields allowed"
             triggerAlert(show: true)
         }
         
@@ -46,16 +47,21 @@ struct SignInView: View {
                 .textFieldStyle(.roundedBorder)
             SecureField("Password", text: $password)
                 .textFieldStyle(.roundedBorder)
-            Button("Login") {
-                login()
+            HStack {
+                Button("Login") {
+//                    login()
+                }
+                .disabled(shouldButtonsDisabled)
+                Button("Sign Up"){
+                    signUp()
+                }
+                .padding()
+                .alert(isPresented: $shouldShowAlert, content: {
+                    Alert(title: "Error".makeText(), message: alertErrorMessage.makeText())
+                })
+                .disabled(shouldButtonsDisabled)
             }
-            .padding()
-            .alert(isPresented: $shouldShowAlert, content: {
-                Alert(title: "Error".makeText(), message: "No empty field allowed".makeText())
-            })
-            .alert(isPresented: $shouldShowAuthErrorAlert, content: {
-                Alert(title: "Error".makeText(), message: Text(authErrorMessage))
-            })
+            
             
         }
         .padding()
