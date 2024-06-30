@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct SettingsView: View {
+    
+    func logout(){
+    }
+    
     var body: some View {
-        Text("Settings")
+        Button("Logout"){
+            
+        }
     }
 }
 

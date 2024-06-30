@@ -7,20 +7,18 @@
 
 import SwiftUI
 
-struct Feed: Identifiable {
-    var id: UUID
-    var name: String
-    var url: URL
-}
-
 struct FeedView: View {
     
     var feeds: [Feed]?
     
     var body: some View {
-        List(feeds ?? []) { feed in
-            Text(feed.name)
+        NavigationStack{
+            List(feeds ?? []) { feed in
+                Text(feed.name)
+            }
         }
+        .navigationTitle("Feeds")
+        
     }
 }
 
