@@ -17,24 +17,35 @@ struct SignInView: View {
     @State private var alertErrorMessage = ""
     @State private var shouldButtonsDisabled = false
     
+    func isFieldsValidationPassed() -> Bool {
+        let passed = username != "" && password != "" && email != ""
+        if !passed {
+            triggerAlert(with: "No empty fields allowed")
+        }
+        return passed
+    }
+    
     func signUp(){
-        if (username != "" && password != "" && email != ""){
+        if (isFieldsValidationPassed()){
             AuthUtils.doAuth(model: AuthViewModel(email: email, username: username, password: password)) { error in
                 guard error == nil else {
-                    alertErrorMessage = error?.localizedDescription ?? "Error"
-                    triggerAlert(show: true)
+                    triggerAlert(with: error?.localizedDescription ?? "Error")
                     return
                 }
                 print("Signed up successfully")
             }
-        }else{
-            alertErrorMessage = "No empty fields allowed"
-            triggerAlert(show: true)
         }
-        
-        func triggerAlert(show: Bool){
-            shouldShowAlert = show
+    }
+    
+    func login() {
+        if (isFieldsValidationPassed()){
+            
         }
+    }
+    
+    func triggerAlert(with message: String){
+        alertErrorMessage = message
+        shouldShowAlert = true
     }
     
     var body: some View {
