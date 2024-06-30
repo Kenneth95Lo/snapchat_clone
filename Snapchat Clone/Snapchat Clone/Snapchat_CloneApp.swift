@@ -7,8 +7,14 @@
 
 import SwiftUI
 
-class UserAuth: ObservableObject {
+struct LoggedInUser {
+    var username: String
+    var email: String
+}
+
+public class UserAuth: ObservableObject {
     @Published var userLoggedIn = false
+    @Published var currentUser: LoggedInUser?
 }
 
 @main

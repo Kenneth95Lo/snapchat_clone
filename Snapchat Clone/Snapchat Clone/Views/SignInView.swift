@@ -46,11 +46,11 @@ struct SignInView: View {
     
     func login() {
         if (isFieldsValidationPassed()){
-            AuthUtils.loginUser(model: AuthViewModel(email: email, username: username, password: password)) { error in
+            AuthUtils.loginUser(model: AuthViewModel(email: email, username: username, password: password), userAuth: userAuth) { error in
                 guard error == nil else {
                     return triggerAlert(with: error?.localizedDescription ?? "Log in failed")
                 }
-                userAuth.userLoggedIn = true
+//                userAuth.userLoggedIn = true
             }
         }
     }
@@ -66,6 +66,8 @@ struct SignInView: View {
                 .font(.largeTitle)
             TextField("Email", text: $email)
                 .textFieldStyle(.roundedBorder)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
             TextField("Username", text: $username)
                 .textFieldStyle(.roundedBorder)
             SecureField("Password", text: $password)
@@ -84,8 +86,6 @@ struct SignInView: View {
                 })
                 .disabled(shouldButtonsDisabled)
             }
-            
-            
         }
         .padding()
     }

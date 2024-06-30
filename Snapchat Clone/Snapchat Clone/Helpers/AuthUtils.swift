@@ -19,7 +19,7 @@ struct AuthViewModel: Codable {
 //    case UnableToEncodeUser
 //}
 
-class AuthUtils {
+final class AuthUtils {
     
     typealias AuthFnCompletion = (Error?) -> Void
     
@@ -36,12 +36,25 @@ class AuthUtils {
         }
     }
     
-    static func loginUser(model: AuthViewModel, completion: @escaping AuthFnCompletion){
+    static func loginUser(model: AuthViewModel, userAuth: UserAuth, completion: @escaping AuthFnCompletion){
         Auth.auth().signIn(withEmail: model.email, password: model.password) { authResult, error in
             guard error == nil else {
                 return completion(error)
             }
+            userAuth.currentUser = LoggedInUser(username: authResult?.user.displayName ?? "", email: authResult?.user.email ?? "")
+            userAuth.userLoggedIn = true
             completion(nil)
+        }
+    }
+    
+    static func logout(userAuth: UserAuth,  completion: @escaping AuthFnCompletion){
+        do {
+            userAuth.currentUser = nil
+            userAuth.userLoggedIn = false
+            try Auth.auth().signOut()
+            completion(nil)
+        }catch{
+            completion(error)
         }
     }
 }
