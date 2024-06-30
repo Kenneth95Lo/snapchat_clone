@@ -88,6 +88,8 @@ struct SignInView: View {
             }
         }
         .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.yellow)
     }
 }
 
