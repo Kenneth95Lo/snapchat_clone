@@ -12,14 +12,22 @@ struct SettingsView: View {
     @EnvironmentObject var userAuth: UserAuth
     @State var shouldShowSignIn = false
     
-    func logout(){
-        AuthUtils.logout(userAuth: userAuth) { error in
-            guard error == nil else {
+    private var loginViewModel: LoginViewModel?
+    
+    init() {
+        loginViewModel = LoginViewModel(userAuth: userAuth)
+    }
+    
+    func initCallbacks(){
+        loginViewModel?.logoutCallback = { success in
+            guard success else {
                 return
             }
-            
         }
-        userAuth.userLoggedIn = false
+    }
+    
+    func logout(){
+        loginViewModel?.doLogout()
     }
     
     var body: some View {

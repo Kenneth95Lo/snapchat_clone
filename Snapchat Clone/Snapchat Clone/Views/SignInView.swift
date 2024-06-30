@@ -19,6 +19,30 @@ struct SignInView: View {
     @State private var alertErrorMessage = ""
     @State private var shouldButtonsDisabled = false
     
+    private var loginViewModel: LoginViewModel?
+    
+    private var loginDetails: AuthViewModel {
+        return AuthViewModel(email: self.email, username: self.username, password: self.password)
+    }
+    
+    init(){
+        self.loginViewModel = LoginViewModel(userAuth: userAuth)
+    }
+    
+    func initCallbacks(){
+        loginViewModel?.loggedInCallback = { error in
+            guard error == nil else {
+                return triggerAlert(with: error?.localizedDescription ?? "Login failed..." )
+            }
+        }
+        
+        loginViewModel?.signUpCallback = { error in
+            guard error == nil else {
+                return triggerAlert(with: error?.localizedDescription ?? "Sign up failed..." )
+            }
+        }
+    }
+    
     func isFieldsValidationPassed(shouldCheckUsername: Bool = false) -> Bool {
         var passed = password != "" && email != ""
         
@@ -34,24 +58,13 @@ struct SignInView: View {
     
     func signUp(){
         if (isFieldsValidationPassed(shouldCheckUsername: true)){
-            AuthUtils.createUser(model: AuthViewModel(email: email, username: username, password: password)) { error in
-                guard error == nil else {
-                    triggerAlert(with: error?.localizedDescription ?? "Error")
-                    return
-                }
-                print("Signed up successfully")
-            }
+            loginViewModel?.doSignUp(model: loginDetails)
         }
     }
     
     func login() {
         if (isFieldsValidationPassed()){
-            AuthUtils.loginUser(model: AuthViewModel(email: email, username: username, password: password), userAuth: userAuth) { error in
-                guard error == nil else {
-                    return triggerAlert(with: error?.localizedDescription ?? "Log in failed")
-                }
-//                userAuth.userLoggedIn = true
-            }
+            loginViewModel?.doLogin(model: loginDetails)
         }
     }
     
@@ -90,6 +103,9 @@ struct SignInView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.yellow)
+        .onAppear {
+            initCallbacks()
+        }
     }
 }
 
