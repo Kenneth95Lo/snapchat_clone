@@ -13,7 +13,11 @@ struct LoggedInUser {
 }
 
 public class UserAuth: ObservableObject {
-    @Published var userLoggedIn = false
+    @Published var userLoggedIn = false {
+        didSet {
+            print("heyyyyyyy")
+        }
+    }
     @Published var currentUser: LoggedInUser?
 }
 

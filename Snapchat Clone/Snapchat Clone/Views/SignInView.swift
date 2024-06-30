@@ -19,24 +19,23 @@ struct SignInView: View {
     @State private var alertErrorMessage = ""
     @State private var shouldButtonsDisabled = false
     
-    private var loginViewModel: LoginViewModel?
+    @StateObject private var loginViewModel = LoginViewModel()
     
     private var loginDetails: AuthViewModel {
         return AuthViewModel(email: self.email, username: self.username, password: self.password)
     }
     
-    init(){
-        self.loginViewModel = LoginViewModel(userAuth: userAuth)
-    }
-    
     func initCallbacks(){
-        loginViewModel?.loggedInCallback = { error in
+        
+        loginViewModel.userAuth = userAuth
+        
+        loginViewModel.loggedInCallback = { error in
             guard error == nil else {
                 return triggerAlert(with: error?.localizedDescription ?? "Login failed..." )
             }
         }
         
-        loginViewModel?.signUpCallback = { error in
+        loginViewModel.signUpCallback = { error in
             guard error == nil else {
                 return triggerAlert(with: error?.localizedDescription ?? "Sign up failed..." )
             }
@@ -58,13 +57,13 @@ struct SignInView: View {
     
     func signUp(){
         if (isFieldsValidationPassed(shouldCheckUsername: true)){
-            loginViewModel?.doSignUp(model: loginDetails)
+            loginViewModel.doSignUp(model: loginDetails)
         }
     }
     
     func login() {
         if (isFieldsValidationPassed()){
-            loginViewModel?.doLogin(model: loginDetails)
+            loginViewModel.doLogin(model: loginDetails)
         }
     }
     

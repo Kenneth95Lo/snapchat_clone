@@ -12,14 +12,13 @@ struct SettingsView: View {
     @EnvironmentObject var userAuth: UserAuth
     @State var shouldShowSignIn = false
     
-    private var loginViewModel: LoginViewModel?
-    
-    init() {
-        loginViewModel = LoginViewModel(userAuth: userAuth)
-    }
+    @State private var loginViewModel = LoginViewModel()
     
     func initCallbacks(){
-        loginViewModel?.logoutCallback = { success in
+        
+        self.loginViewModel.userAuth = userAuth
+        
+        loginViewModel.logoutCallback = { success in
             guard success else {
                 return
             }
@@ -27,14 +26,17 @@ struct SettingsView: View {
     }
     
     func logout(){
-        loginViewModel?.doLogout()
+        loginViewModel.doLogout()
     }
     
     var body: some View {
         Button("Logout"){
             logout()
+        }.onAppear{
+            initCallbacks()
         }
     }
+    
 }
 
 #Preview {
