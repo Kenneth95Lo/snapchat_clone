@@ -7,16 +7,24 @@
 
 import SwiftUI
 
+class UserAuth: ObservableObject {
+    @Published var userLoggedIn = false
+}
+
 @main
 struct Snapchat_CloneApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    @StateObject var userAuth = UserAuth()
+    
     var body: some Scene {
         WindowGroup {
-            SignInView()
-//            TabViews()
-            
-        }
+            if userAuth.userLoggedIn {
+                TabViews()
+            }else{
+                SignInView()
+            }
+        }.environmentObject(userAuth)
     }
 }

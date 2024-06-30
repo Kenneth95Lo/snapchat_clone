@@ -20,9 +20,11 @@ struct AuthViewModel: Codable {
 //}
 
 class AuthUtils {
-    static func doAuth(model: AuthViewModel, completion: @escaping (Error?) -> Void){
+    
+    typealias AuthFnCompletion = (Error?) -> Void
+    
+    static func createUser(model: AuthViewModel, completion: @escaping AuthFnCompletion){
         Auth.auth().createUser(withEmail: model.email, password: model.password) { auth, error in
-            
             guard error == nil else {
                 return completion(error)
             }
@@ -30,6 +32,15 @@ class AuthUtils {
             let fireStore = Firestore.firestore()
             let userDict = ["email": model.email, "username": model.username]
             fireStore.collection("UserInfo").addDocument(data: userDict, completion: completion)
+            completion(nil)
+        }
+    }
+    
+    static func loginUser(model: AuthViewModel, completion: @escaping AuthFnCompletion){
+        Auth.auth().signIn(withEmail: model.email, password: model.password) { authResult, error in
+            guard error == nil else {
+                return completion(error)
+            }
             completion(nil)
         }
     }

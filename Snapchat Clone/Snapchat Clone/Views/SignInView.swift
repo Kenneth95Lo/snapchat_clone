@@ -10,6 +10,8 @@ import Firebase
 
 struct SignInView: View {
     
+    @EnvironmentObject var userAuth: UserAuth
+    
     @State private var username = ""
     @State private var password = ""
     @State private var email = ""
@@ -17,8 +19,13 @@ struct SignInView: View {
     @State private var alertErrorMessage = ""
     @State private var shouldButtonsDisabled = false
     
-    func isFieldsValidationPassed() -> Bool {
-        let passed = username != "" && password != "" && email != ""
+    func isFieldsValidationPassed(shouldCheckUsername: Bool = false) -> Bool {
+        var passed = password != "" && email != ""
+        
+        if shouldCheckUsername {
+            passed = passed && (username != "")
+        }
+        
         if !passed {
             triggerAlert(with: "No empty fields allowed")
         }
@@ -26,8 +33,8 @@ struct SignInView: View {
     }
     
     func signUp(){
-        if (isFieldsValidationPassed()){
-            AuthUtils.doAuth(model: AuthViewModel(email: email, username: username, password: password)) { error in
+        if (isFieldsValidationPassed(shouldCheckUsername: true)){
+            AuthUtils.createUser(model: AuthViewModel(email: email, username: username, password: password)) { error in
                 guard error == nil else {
                     triggerAlert(with: error?.localizedDescription ?? "Error")
                     return
@@ -39,7 +46,12 @@ struct SignInView: View {
     
     func login() {
         if (isFieldsValidationPassed()){
-            
+            AuthUtils.loginUser(model: AuthViewModel(email: email, username: username, password: password)) { error in
+                guard error == nil else {
+                    return triggerAlert(with: error?.localizedDescription ?? "Log in failed")
+                }
+                userAuth.userLoggedIn = true
+            }
         }
     }
     
@@ -60,7 +72,7 @@ struct SignInView: View {
                 .textFieldStyle(.roundedBorder)
             HStack {
                 Button("Login") {
-//                    login()
+                    login()
                 }
                 .disabled(shouldButtonsDisabled)
                 Button("Sign Up"){
@@ -81,6 +93,7 @@ struct SignInView: View {
 
 #Preview {
     SignInView()
+        .environmentObject(UserAuth())
 }
 
 extension String {
