@@ -22,9 +22,6 @@ struct AuthViewModel: Codable {
 public typealias AuthFnCompletion = (Error?) -> Void
 
 final class AuthUtils {
-    
-    
-    
     static func createUser(model: AuthViewModel, completion: @escaping AuthFnCompletion){
         Auth.auth().createUser(withEmail: model.email, password: model.password) { auth, error in
             guard error == nil else {

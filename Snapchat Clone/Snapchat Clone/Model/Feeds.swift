@@ -8,11 +8,11 @@
 import Foundation
 
 struct Feed: Identifiable {
-    var id: UUID
-    var name: String
-    var url: URL
+    let id: UUID
+    let name: String
+    let url: URL
 }
 
 struct Feeds {
-    var feeds: [Feed]
+    let feeds: [Feed]
 }
