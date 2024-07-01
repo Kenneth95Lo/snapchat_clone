@@ -10,8 +10,6 @@ import Firebase
 
 struct SignInView: View {
     
-    @EnvironmentObject var userAuth: UserAuth
-    
     @State private var username = ""
     @State private var password = ""
     @State private var email = ""
@@ -19,7 +17,7 @@ struct SignInView: View {
     @State private var alertErrorMessage = ""
     @State private var shouldButtonsDisabled = false
     
-    @StateObject private var loginViewModel = LoginViewModel()
+    @EnvironmentObject private var loginViewModel: LoginViewModel
     
     private var loginDetails: AuthViewModel {
         return AuthViewModel(email: self.email, username: self.username, password: self.password)
@@ -27,14 +25,14 @@ struct SignInView: View {
     
     func initCallbacks(){
         
-        loginViewModel.userAuth = userAuth
-        
+        //Login callback
         loginViewModel.loggedInCallback = { error in
             guard error == nil else {
                 return triggerAlert(with: error?.localizedDescription ?? "Login failed..." )
             }
         }
         
+        //Sign Up callback
         loginViewModel.signUpCallback = { error in
             guard error == nil else {
                 return triggerAlert(with: error?.localizedDescription ?? "Sign up failed..." )
@@ -74,7 +72,7 @@ struct SignInView: View {
     
     var body: some View {
         VStack {
-            Text("Snapchat Clone")
+            "Snapchat Clone".makeText()
                 .font(.largeTitle)
             TextField("Email", text: $email)
                 .textFieldStyle(.roundedBorder)
@@ -110,7 +108,7 @@ struct SignInView: View {
 
 #Preview {
     SignInView()
-        .environmentObject(UserAuth())
+        .environmentObject(LoginViewModel())
 }
 
 extension String {

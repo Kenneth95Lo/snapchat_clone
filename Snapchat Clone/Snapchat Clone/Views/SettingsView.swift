@@ -9,15 +9,9 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @EnvironmentObject var userAuth: UserAuth
-    @State var shouldShowSignIn = false
-    
-    @State private var loginViewModel = LoginViewModel()
+    @EnvironmentObject private var loginViewModel: LoginViewModel
     
     func initCallbacks(){
-        
-        self.loginViewModel.userAuth = userAuth
-        
         loginViewModel.logoutCallback = { success in
             guard success else {
                 return
@@ -40,5 +34,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView().environmentObject(UserAuth())
+    SettingsView().environmentObject(LoginViewModel())
 }
