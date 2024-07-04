@@ -95,7 +95,7 @@ class UploadViewModel: ObservableObject {
             //FieldValue provided by Firebase
             let snapDictionary : [String: Any] = [
                 FIELD_IMAGE_URL_ARRAY: [urlStr],
-                FIELD_SNAP_OWNER: Auth.auth().currentUser!.displayName ?? "",
+                FIELD_SNAP_OWNER: Auth.auth().currentUser!.uid,
                 "timestamp": FieldValue.serverTimestamp()
             ]
             
